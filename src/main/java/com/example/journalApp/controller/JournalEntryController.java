@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/journal")
+@RequestMapping("/_journal")
 public class JournalEntryController {
 
     public Map<Long, JournalEntry> journalEntries = new HashMap<>();
@@ -21,7 +21,7 @@ public class JournalEntryController {
 
     @PostMapping
     public boolean createEntry(@RequestBody JournalEntry myEntry) {
-        journalEntries.put(myEntry.getId(), myEntry);
+        journalEntries.put(Long.valueOf(myEntry.getId()), myEntry);
         return true;
     }
 
