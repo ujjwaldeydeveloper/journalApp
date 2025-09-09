@@ -21,7 +21,7 @@ public class JournalEntryController {
 
     @PostMapping
     public boolean createEntry(@RequestBody JournalEntry myEntry) {
-        journalEntries.put(Long.valueOf(myEntry.getId()), myEntry);
+//        journalEntries.put(Long.valueOf(myEntry.getId()), myEntry);
         return true;
     }
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class JournalEntryService {
@@ -21,5 +22,17 @@ public class JournalEntryService {
     public List<JournalEntry> getAll() {
         return journalEntryRepository.findAll();
     }
+
+    public Optional<JournalEntry> getByID(Object id) {
+        return journalEntryRepository.findById(id);
+    }
+
+    public void deleteByID(Object id) {
+        journalEntryRepository.deleteById(id);
+    }
+
+//    public void updateEntry(JournalEntry journalEntry) {
+//        journalEntryRepository.save(journalEntry)
+//    }
 
 }
