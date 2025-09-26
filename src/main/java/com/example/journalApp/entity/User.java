@@ -1,6 +1,9 @@
 package com.example.journalApp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -13,12 +16,12 @@ import java.util.List;
 @Document(collection = "users")
 @Data
 public class User {
-    @Id
 
+    @Id
     private Object id;
     @NonNull
-    @Indexed(unique = true)
-    private String userName;
+    @Indexed(unique = true, sparse = true)
+    private String name;
     @NonNull
     private String password;
     @DBRef

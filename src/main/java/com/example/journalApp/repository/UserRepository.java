@@ -3,6 +3,8 @@ package com.example.journalApp.repository;
 import com.example.journalApp.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Optional;
+
 public interface UserRepository extends MongoRepository<User, Object> {
-    User findByUserName(String username);
+    Optional<User> findByName(String name);
 }

@@ -20,7 +20,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping()
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getJournalEntries() {
         List<User> users = userService.getAll();
         if (users != null && !users.isEmpty()) {
             return new ResponseEntity<>(users, HttpStatus.OK);
@@ -50,13 +50,13 @@ public class UserController {
 
     @PutMapping("/{userName}")
     public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String userName) {
-        User userInDb = userService.findByUserName(userName);
-        if(userInDb != null) {
-            userInDb.setUserName(user.getUserName());
-            userInDb.setPassword(!user.getPassword().isEmpty() ? user.getPassword() : userInDb.getPassword());
-            userService.saveEntry(userInDb);
-            return new ResponseEntity<>(userInDb, HttpStatus.OK);
-        }
+//        User userInDb = userService.findByName(userName);
+//        if(userInDb != null) {
+//            userInDb.setName(user.getName());
+//            userInDb.setPassword(!user.getPassword().isEmpty() ? user.getPassword() : userInDb.getPassword());
+//            userService.saveEntry(userInDb);
+//            return new ResponseEntity<>(userInDb, HttpStatus.OK);
+//        }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
