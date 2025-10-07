@@ -5,6 +5,7 @@ import com.example.journalApp.entity.User;
 import com.example.journalApp.repository.JournalEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,25 +20,24 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
-
+    @Transactional
     public void saveEntry(JournalEntry journalEntry, String userName) {
-        // Validate journal entry
-//        if (journalEntry == null || journalEntry.getTitle() == null || journalEntry.getTitle().trim().isEmpty()) {
-//            throw new IllegalArgumentException("Journal entry title cannot be null or empty");
-//        }
-        
-        Optional<User> userOptional = userService.findByName(userName);
-        if(userOptional.isEmpty()) {
-            throw new IllegalArgumentException("User not found: " + userName);
+        try {
+            Optional<User> userOptional = userService.findByName(userName);
+            if(userOptional.isEmpty()) {
+                throw new IllegalArgumentException("User not found: " + userName);
+            }
+            User user = userOptional.get();
+
+            journalEntry.setDate(LocalDateTime.now());
+            JournalEntry saved = journalEntryRepository.save(journalEntry);
+            // adding db reference of saved Journal
+            user.getJournalEntries().add(saved);
+            // saving the user with journal entry
+            userService.saveEntry(user);
+        } catch (Exception e) {
+            throw new RuntimeException("An error ooccurred while saving the entry.", e);
         }
-        User user = userOptional.get();
-        
-        journalEntry.setDate(LocalDateTime.now());
-        JournalEntry saved = journalEntryRepository.save(journalEntry);
-        // adding db reference of saved Journal
-        user.getJournalEntries().add(saved);
-        // saving the user with journal entry
-        userService.saveEntry(user);
     }
 
     public void saveUpdateEntry(JournalEntry journalEntry) {
