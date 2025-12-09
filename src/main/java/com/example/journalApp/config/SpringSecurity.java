@@ -24,10 +24,17 @@ public class SpringSecurity  {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/journal/**").authenticated()
+                        .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/journal/**","/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
@@ -38,10 +45,10 @@ public class SpringSecurity  {
         return http.build();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+//        return authConfig.getAuthenticationManager();
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

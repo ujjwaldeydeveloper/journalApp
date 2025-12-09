@@ -2,11 +2,14 @@ package com.example.journalApp.controller;
 
 
 import com.example.journalApp.entity.User;
+import com.example.journalApp.repository.UserRepository;
 import com.example.journalApp.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,45 +22,35 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping()
-    public ResponseEntity<?> getJournalEntries() {
-        List<User> users = userService.getAll();
-        if (users != null && !users.isEmpty()) {
-            return new ResponseEntity<>(users, HttpStatus.OK);
+    @Autowired
+    private UserRepository userRepository;
+    // only admin can visit users so removing get Users
+
+    // Shifting post method to create user to Public controller
+
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        // Getting User name rom Security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
+        Optional<User> userInDb = userService.findByName(userName);
+        if(userInDb.isPresent()) {
+            userInDb.get().setName(user.getName());
+            if(user.getPassword() != null && !user.getPassword().isEmpty()) {
+                userInDb.get().setPassword(user.getPassword());
+            }
+            userService.saveEntry(userInDb.get());
+            return new ResponseEntity<>(userInDb, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping
-    public ResponseEntity<?> addNewUser(@RequestBody User user) {
-        try {
-            user.setId(new ObjectId());
-            userService.saveEntry(user);
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error creating new user" + e.toString(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping("id/{myId}")
-    public ResponseEntity<?> getUserById(@PathVariable Object myId) {
-        Optional<User> user = userService.getByID(myId);
-        if (user.isPresent()) {
-            return new ResponseEntity<User>(user.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @PutMapping("/{userName}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String userName) {
-//        User userInDb = userService.findByName(userName);
-//        if(userInDb != null) {
-//            userInDb.setName(user.getName());
-//            userInDb.setPassword(!user.getPassword().isEmpty() ? user.getPassword() : userInDb.getPassword());
-//            userService.saveEntry(userInDb);
-//            return new ResponseEntity<>(userInDb, HttpStatus.OK);
-//        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @DeleteMapping
+    public ResponseEntity<?> deleteUserById() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userRepository.deleteByName(authentication.getName());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
