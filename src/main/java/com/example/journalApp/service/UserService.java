@@ -20,11 +20,11 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
 
-    public void saveNewUser(User user) {
+    public void saveEntry(User user) {
         userRepository.save(user);
     }
 
-    public void saveEntry(User user) {
+    public void saveNewUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Arrays.asList("User"));
         userRepository.save(user);

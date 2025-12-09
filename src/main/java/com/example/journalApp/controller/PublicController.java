@@ -30,7 +30,7 @@ public class PublicController {
     public ResponseEntity<?> addNewUser(@RequestBody User user) {
         try {
             user.setId(new ObjectId());
-            userService.saveEntry(user);
+            userService.saveNewUser(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("Error creating new user" + e.toString(), HttpStatus.BAD_REQUEST);
