@@ -2,6 +2,7 @@ package com.example.journalApp.service;
 
 import com.example.journalApp.entity.User;
 import com.example.journalApp.repository.UserRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,13 @@ public class UserService {
     public void saveNewUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Arrays.asList("User"));
+        userRepository.save(user);
+    }
+
+    public void saveAdmin(User user) {
+        user.setId(new ObjectId());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("User","ADMIN"));
         userRepository.save(user);
     }
 

@@ -26,5 +26,6 @@ public class User {
     private String password;
     @DBRef
     private List<JournalEntry> journalEntries = new ArrayList<>();
+    // RBA (Role Based Access Control)
     private List<String> roles = new ArrayList<>();
 }
