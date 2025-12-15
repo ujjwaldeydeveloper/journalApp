@@ -32,10 +32,13 @@ public class UserService {
     }
 
     public void saveAdmin(User user) {
-        user.setId(new ObjectId());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("User","ADMIN"));
-        userRepository.save(user);
+        Optional<User> userInDb = userRepository.findByName(user.getName());
+        if (userInDb.isEmpty()) {
+            user.setId(new ObjectId());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(Arrays.asList("User", "ADMIN"));
+            userRepository.save(user);
+        }
     }
 
     public List<User> getAll() {
