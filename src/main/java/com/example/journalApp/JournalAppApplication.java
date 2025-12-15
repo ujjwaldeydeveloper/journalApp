@@ -24,3 +24,6 @@ public class JournalAppApplication {
     }
 
 }
+
+// precedence order
+// command line arguments in edit configuration > application.properties > application.yml
