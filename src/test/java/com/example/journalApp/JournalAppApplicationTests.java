@@ -1,7 +1,7 @@
 package com.example.journalApp;
 
 import com.example.journalApp.repository.UserRepository;
-import org.junit.jupiter.api.Assertions.*;
+import com.example.journalApp.service.UserService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,10 +12,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static com.mongodb.internal.connection.tlschannel.util.Util.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.example.journalApp.entity.User;
 
 @SpringBootTest
 public class JournalAppApplicationTests {
@@ -23,16 +23,14 @@ public class JournalAppApplicationTests {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
 
 	@ParameterizedTest
-    @ValueSource(strings = {
-            "ram",
-            "ujjwal",
-            "dey"
-    })
     @ArgumentsSource(UserArgumentsProvider.class)
-	public void testFindByUserName(String name) {
-        assertTrue(userRepository.findByName(name).isPresent());
+	public void testSaveUserName(User user) {
+        assertTrue(userService.saveNewUser(user));
 	}
 
     @Disabled
