@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserDetailsServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.journalApp.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UserDetailsServiceImpl (com.example.journalApp.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserDetailsServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10%
+  </span>
+  <span class="absValue">
+    (1/10)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.journalApp.service;
+&nbsp;
+&nbsp;import com.example.journalApp.entity.User;
+&nbsp;import com.example.journalApp.repository.UserRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.security.core.Authentication;
+&nbsp;import org.springframework.security.core.context.SecurityContextHolder;
+&nbsp;import org.springframework.security.core.userdetails.UserDetails;
+&nbsp;import org.springframework.security.core.userdetails.UserDetailsService;
+&nbsp;import org.springframework.security.core.userdetails.UsernameNotFoundException;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class UserDetailsServiceImpl implements UserDetailsService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository;
+&nbsp;
+&nbsp;    /*
+&nbsp;    Security Filter Intercepts: Before the request reaches your controller
+&nbsp;    (UserController, PublicController, etc.), it&#39;s intercepted by Spring
+&nbsp;    Security&#39;s filter chain.
+&nbsp;
+&nbsp;    Authentication Attempt: The filter chain&#39;s primary job is to establish
+&nbsp;    the identity of the caller. It looks for authentication details,
+&nbsp;    typically a JWT in an Authorization header or a session cookie.
+&nbsp;
+&nbsp;    Username Extraction: If a token is found, Spring Security
+&nbsp;    validates it and extracts the username.
+&nbsp;
+&nbsp;    User Details Loading: It then calls the loadUserByUsername method of your
+&nbsp;    UserDetailsServiceImpl. This is the crucial step. Spring Security needs
+&nbsp;    to get the user&#39;s latest details (especially roles and password) from the
+&nbsp;    database to build a complete Authentication object. This object represents
+&nbsp;    the currently logged-in user for this specific request.
+&nbsp;
+&nbsp;    Security Context: This Authentication object is placed in the SecurityContextHolder,
+&nbsp;    making it available throughout your application (which is why SecurityContextHolder.
+&nbsp;    getContext().getAuthentication() works in your controllers).
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+<b class="nc">&nbsp;        Optional&lt;User&gt; user = userRepository.findByName(username);</b>
+<b class="nc">&nbsp;        if(user.isPresent()) {</b>
+<b class="nc">&nbsp;            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()</b>
+<b class="nc">&nbsp;                    .username(user.get().getName())</b>
+<b class="nc">&nbsp;                    .password(user.get().getPassword())</b>
+<b class="nc">&nbsp;                    .roles(user.get().getRoles().toArray(new String[0]))</b>
+<b class="nc">&nbsp;                    .build();</b>
+&nbsp;
+<b class="nc">&nbsp;            return userDetails;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        throw new UsernameNotFoundException(&quot;User not found with username: &quot; + username);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-12-23 13:32</div>
+</div>
+</body>
+</html>

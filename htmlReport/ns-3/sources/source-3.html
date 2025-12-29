@@ -1,0 +1,233 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > JournalEntryControllerV2</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.journalApp.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: JournalEntryControllerV2 (com.example.journalApp.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JournalEntryControllerV2</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.1%
+  </span>
+  <span class="absValue">
+    (1/47)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.journalApp.controller;
+&nbsp;
+&nbsp;import com.example.journalApp.entity.JournalEntry;
+&nbsp;import com.example.journalApp.entity.User;
+&nbsp;import com.example.journalApp.service.JournalEntryService;
+&nbsp;import com.example.journalApp.service.UserService;
+&nbsp;import org.bson.types.ObjectId;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.security.core.Authentication;
+&nbsp;import org.springframework.security.core.context.SecurityContextHolder;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/journal&quot;)
+<b class="fc">&nbsp;public class JournalEntryControllerV2 {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private JournalEntryService journalEntryService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserService userService;
+&nbsp;    // Enabling Authorization in Journal Controller
+&nbsp;
+&nbsp;    @GetMapping
+&nbsp;    public ResponseEntity&lt;?&gt; getAllJournalEntriesOfUser() {
+&nbsp;        // Getting User name rom Security context
+<b class="nc">&nbsp;        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</b>
+<b class="nc">&nbsp;        String userName = authentication.getName();</b>
+&nbsp;
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOptional = userService.findByName(userName);</b>
+<b class="nc">&nbsp;        if(userOptional.isPresent()) {</b>
+<b class="nc">&nbsp;            User user = userOptional.get();</b>
+<b class="nc">&nbsp;            List&lt;JournalEntry&gt; all = user.getJournalEntries();</b>
+<b class="nc">&nbsp;            if(all != null &amp;&amp; !all.isEmpty()) {</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(all, HttpStatus.OK);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;?&gt; createEntry(@RequestBody JournalEntry myEntry) {
+&nbsp;        try {
+<b class="nc">&nbsp;            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</b>
+<b class="nc">&nbsp;            String userName = authentication.getName();</b>
+<b class="nc">&nbsp;            myEntry.setId(new ObjectId());</b>
+<b class="nc">&nbsp;            journalEntryService.saveEntry(myEntry, userName);</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(myEntry, HttpStatus.CREATED);</b>
+&nbsp;
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(&quot;Error creating journal entry: &quot; + e.toString(), HttpStatus.BAD_REQUEST);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;id/{myId}&quot;)
+&nbsp;    public ResponseEntity&lt;JournalEntry&gt; getJournalEntryById(@PathVariable Object myId) {
+<b class="nc">&nbsp;        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</b>
+<b class="nc">&nbsp;        String userName = authentication.getName();</b>
+<b class="nc">&nbsp;        Optional&lt;User&gt; user = userService.findByName(userName);</b>
+<b class="nc">&nbsp;        if (user.isEmpty()) {</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        List&lt;JournalEntry&gt; collect = user.get().getJournalEntries().stream().filter(x -&gt; x.getId().toString().equals(myId.toString())).toList();</b>
+<b class="nc">&nbsp;        if (!collect.isEmpty()) {</b>
+<b class="nc">&nbsp;            Optional&lt;JournalEntry&gt; journalEntry = journalEntryService.getByID(myId);</b>
+<b class="nc">&nbsp;            if (journalEntry.isPresent()) {</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;JournalEntry&gt;(journalEntry.get(), HttpStatus.OK);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;id/{myId}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; deleteJournalEntryById(@PathVariable Object myId) {
+<b class="nc">&nbsp;        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</b>
+<b class="nc">&nbsp;        String userName = authentication.getName();</b>
+&nbsp;
+<b class="nc">&nbsp;        boolean removed = journalEntryService.deleteByID(myId, userName);</b>
+<b class="nc">&nbsp;        if(removed) {</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;id/{myId}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; updateJounalById(
+&nbsp;            @PathVariable Object myId,
+&nbsp;            @RequestBody JournalEntry newEntry
+&nbsp;    ) {
+<b class="nc">&nbsp;        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</b>
+<b class="nc">&nbsp;        String userName = authentication.getName();</b>
+<b class="nc">&nbsp;        Optional&lt;User&gt; user = userService.findByName(userName);</b>
+<b class="nc">&nbsp;        if(user.isPresent()) {</b>
+<b class="nc">&nbsp;            List&lt;JournalEntry&gt; collect = user.get().getJournalEntries().stream().filter(x -&gt; x.getId().toString().equals(myId.toString())).toList();</b>
+<b class="nc">&nbsp;            if (!collect.isEmpty()) {</b>
+<b class="nc">&nbsp;                Optional&lt;JournalEntry&gt; journalEntry = journalEntryService.getByID(myId);</b>
+<b class="nc">&nbsp;                if (journalEntry.isPresent()) {</b>
+<b class="nc">&nbsp;                    JournalEntry old = journalEntry.get();</b>
+<b class="nc">&nbsp;                    old.setTitle((newEntry.getTitle() != null &amp;&amp; !newEntry.getTitle().equals(&quot;&quot;)) ? newEntry.getTitle() : old.getTitle());</b>
+<b class="nc">&nbsp;                    old.setContent((newEntry.getContent() != null &amp;&amp; !newEntry.getContent().equals(&quot;&quot;)) ? newEntry.getContent() : old.getContent());</b>
+<b class="nc">&nbsp;                    journalEntryService.saveUpdateEntry(old);</b>
+<b class="nc">&nbsp;                    return new ResponseEntity&lt;&gt;(old, HttpStatus.OK);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-12-23 13:32</div>
+</div>
+</body>
+</html>
