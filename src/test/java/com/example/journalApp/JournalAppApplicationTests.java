@@ -14,8 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.example.journalApp.entity.User;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+//@ActiveProfiles("dev")  // we canmaake profile based testecases writing also.
 public class JournalAppApplicationTests {
 
     @Autowired
