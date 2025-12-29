@@ -1,4 +1,4 @@
-package com.example.journalApp;
+package com.example.journalApp.service;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
