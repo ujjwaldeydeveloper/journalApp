@@ -1,0 +1,18 @@
+<configuration>
+
+    <appender name = "myConsleAppender" class = "ch.qos.logback.core.ConsoleAppender">
+
+    </appender>
+
+    <appender name = "myFileAppender" class = "ch.qos.logback.core.FileAppender">
+        <file>
+            journalApp.log
+        </file>
+    </appender>
+
+    <root level = "INFO">
+        <appender-ref ref="myConsoleAppender" />
+        <appender-ref ref="myFileAppender" />
+    </root>
+
+</configuration>
