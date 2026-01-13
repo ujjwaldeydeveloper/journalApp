@@ -1,3 +1,12 @@
 spring:
   profiles:
     active: dev #we can active many profile by seperated commas
+
+
+logging:
+  level:
+    ## root: OFF ## this will ensure the logging rule applicable for all level
+    com:
+      example:
+        ## Dubug and more severity log enable for journal app package only
+        journalApp: DEBUG

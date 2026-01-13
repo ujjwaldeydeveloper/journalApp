@@ -35,6 +35,7 @@ public class UserService {
             return true;
         } catch (Exception e) {
             log.info("Invaild User or Duplicate user detected while saving for {} :", user.getName(), e);
+            log.debug("check");
             return false;
         }
     }
