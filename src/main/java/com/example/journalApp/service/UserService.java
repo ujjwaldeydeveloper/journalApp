@@ -3,6 +3,8 @@ package com.example.journalApp.service;
 import com.example.journalApp.entity.User;
 import com.example.journalApp.repository.UserRepository;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,8 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
 
     public void saveEntry(User user) {
         userRepository.save(user);
@@ -33,6 +37,7 @@ public class UserService {
             userRepository.save(user);
             return true;
         } catch (Exception e) {
+            logger.info("Invaild User or Duplicate user detected while saving for {} :", user.getName(), e);
             return false;
         }
     }
