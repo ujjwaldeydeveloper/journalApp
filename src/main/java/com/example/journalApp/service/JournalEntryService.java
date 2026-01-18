@@ -2,7 +2,10 @@ package com.example.journalApp.service;
 
 import com.example.journalApp.entity.JournalEntry;
 import com.example.journalApp.entity.User;
+import com.example.journalApp.exception.JournalEntryException;
 import com.example.journalApp.repository.JournalEntryRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class JournalEntryService {
 
     @Autowired
@@ -35,8 +39,10 @@ public class JournalEntryService {
             user.getJournalEntries().add(saved);
             // saving the user with journal entry
             userService.saveEntry(user);
+        } catch (IllegalArgumentException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("An error ooccurred while saving the entry.", e);
+            throw new JournalEntryException("An error occurred while saving the entry.", e);
         }
     }
 
@@ -78,14 +84,10 @@ public class JournalEntryService {
             return removed;
 
         } catch (Exception e) {
-            System.out.println(e);
-            throw new RuntimeException("An error occured while deleting the entry", e);
+            log.error("Error : ", e);
+            throw new JournalEntryException("An error occurred while deleting the entry", e);
         }
 
     }
-
-//    public void updateEntry(JournalEntry journalEntry) {
-//        journalEntryRepository.save(journalEntry)
-//    }
 
 }

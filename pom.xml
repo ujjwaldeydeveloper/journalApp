@@ -29,6 +29,12 @@
 	<properties>
 		<java.version>17</java.version>
         <sonar.organization>ujjwaldeydeveloper</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.projectKey>com.company.journalApp</sonar.projectKey>
+        <sonar.projectName>journalApp</sonar.projectName>
+        <sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*Test.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
+        <sonar.issue.ignore.multicriteria.e1.ruleKey>*</sonar.issue.ignore.multicriteria.e1.ruleKey>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -66,6 +72,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.10.0.2594</version>
+            </plugin>
 		</plugins>
 	</build>
 
