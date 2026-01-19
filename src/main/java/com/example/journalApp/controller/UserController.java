@@ -1,9 +1,11 @@
 package com.example.journalApp.controller;
 
 
+import com.example.journalApp.api_response.WeatherResponse;
 import com.example.journalApp.entity.User;
 import com.example.journalApp.repository.UserRepository;
 import com.example.journalApp.service.UserService;
+import com.example.journalApp.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,9 @@ public class UserController {
 
     // Shifting post method to create user to Public controller
     // Enabled Authorization in User Controller
+
+    @Autowired
+    private WeatherService weatherService;
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
@@ -50,6 +55,18 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userRepository.deleteByName(authentication.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> greeting() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
+        String greetings = "";
+        if(weatherResponse != null) {
+            greetings = "Weather feels like " + weatherResponse.getCurrent().getFeelslike() + " degrees";
+        }
+        return new ResponseEntity<>("Hi " + userName + greetings, HttpStatus.OK);
     }
 
 

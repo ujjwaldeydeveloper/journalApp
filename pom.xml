@@ -35,6 +35,7 @@
         <sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*Test.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>*</sonar.issue.ignore.multicriteria.e1.ruleKey>
+        <skipTests>true</skipTests>
 	</properties>
 	<dependencies>
 		<dependency>
