@@ -10,3 +10,7 @@ logging:
       example:
         ## Dubug and more severity log enable for journal app package only
         journalApp: DEBUG
+
+weather:
+  api:
+    key: "0098e097dd64e3d72c5f4632c70f6dd3"
