@@ -2,6 +2,19 @@ spring:
   profiles:
     active: dev #we can active many profile by seperated commas
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ujjwal.dey55@gmail.com
+    password: "xxxx xxxx xxxx xxxx"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
 
 logging:
   level:
