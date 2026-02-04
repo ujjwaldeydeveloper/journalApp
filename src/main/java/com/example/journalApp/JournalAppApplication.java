@@ -7,12 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableTransactionManagement
+@EnableScheduling
 public class JournalAppApplication {
     // in Environment file you can also keep .....spring.profiles.active=dev
     // to make Jar command .........  .\mvn clean package -D spring.profiles.active=dev [you are setting JVM system properties]
