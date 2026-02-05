@@ -32,8 +32,8 @@ public class UserScheduler {
     @Autowired
     private AppCache appCache;
 
-    @Scheduled(cron = "0 0/1 * * * ?")// per minute triggering
-//    @Scheduled(cron = "0 0 9 * * SUN")
+//    @Scheduled(cron = "0 0/1 * * * ?")// per minute triggering
+    @Scheduled(cron = "0 0 9 * * SUN")
     public void fetchUsersAndSendSentimentAnalysisMail() {
         List<User> users = userRepository.getUserForSA();
         log.info("Fetched {} users for sentiment analysis", users.size());

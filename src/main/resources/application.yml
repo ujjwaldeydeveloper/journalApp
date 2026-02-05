@@ -13,8 +13,12 @@ spring:
           auth: true
           starttls:
             enable: true
-
-
+  redis:
+    host: redis-15692.c212.ap-south-1-1.ec2.cloud.redislabs.com:15692
+    port: 15692
+    password: xxxx-copied
+      # host: localhost
+      # port: 6379
 
 logging:
   level:
