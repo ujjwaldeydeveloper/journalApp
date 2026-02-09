@@ -3,11 +3,13 @@ package com.example.journalApp.scheduler;
 import com.example.journalApp.cache.AppCache;
 import com.example.journalApp.entity.JournalEntry;
 import com.example.journalApp.enums.Sentiment;
+import com.example.journalApp.model.SentimentData;
 import com.example.journalApp.repository.UserRepository;
 import com.example.journalApp.repository.UserRepositoryImpl;
 import com.example.journalApp.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.example.journalApp.entity.User;
@@ -31,6 +33,9 @@ public class UserScheduler {
 
     @Autowired
     private AppCache appCache;
+
+    @Autowired
+    private KafkaTemplate<String, SentimentData> kafkaTemplate;
 
 //    @Scheduled(cron = "0 0/1 * * * ?")// per minute triggering
     @Scheduled(cron = "0 0 9 * * SUN")
@@ -59,7 +64,15 @@ public class UserScheduler {
             }
 
             if (mostFrequentSentiment != null) {
-                emailService.sendEmail(user.getEmail(), "Sentiment for last 7 days ", mostFrequentSentiment.toString());
+                // Now Email which need to send will be queued in Kafka
+                SentimentData sentimentData = SentimentData.builder().email(user.getEmail()).sentiment("Sentiment for last 7 days " + mostFrequentSentiment).build();
+                try {
+                    kafkaTemplate.send("weekly-sentiments", sentimentData.getEmail(), sentimentData).get();
+                } catch (Exception e) {
+                    log.error("Error sending sentiment data for user: {}", user.getEmail(), e);
+                }
+            } else {
+                log.info("No sentiment data found for user: {} in the last 7 days", user.getEmail());
             }
         }
     }

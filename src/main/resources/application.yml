@@ -14,11 +14,57 @@ spring:
           starttls:
             enable: true
   redis:
-    host: redis-15692.c212.ap-south-1-1.ec2.cloud.redislabs.com:15692
+    host: redis-15692.c212.ap-south-1-1.ec2.cloud.redislabs.com
     port: 15692
     password: xxxx-copied
       # host: localhost
       # port: 6379
+
+
+  kafka:
+    bootstrap-servers: pkc-9q8rv.ap-south-2.aws.confluent.cloud:9092 # Comma-delimited list of host:port pairs to use for establishing the initial connections to the Kafka cluster.
+    client-id: ccloud-springboot-client-27e018a2-9ff2-4e29-b386-42195e694550 # ID to pass to the server when making requests.
+
+    # Producer-specific properties
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+    #      acks: all # The number of acknowledgments the producer requires the leader to have received.
+#      retries: 3 # When greater than zero, enables retrying of failed sends.
+#      batch-size: 16384 # Default batch size in bytes.
+
+    # Consumer-specific properties
+    consumer:
+      group-id: weekly-sentiment-group # Unique string that identifies the consumer group.
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.example.journalApp.model
+        # Read from start when no offset (e.g. new consumer group) so sentiment emails are not missed
+        # auto-offset-reset: earliest
+#      enable-auto-commit: true # Whether the consumer's offset is periodically committed in the background.
+#      heartbeat-interval: 3000 # Default is 3000ms. Expected time between heartbeats to the consumer coordinator.
+
+
+    properties:
+      security:
+        protocol: SASL_SSL
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: "org.apache.kafka.common.security.plain.PlainLoginModule required username='xxxx' password='xxxx';"
+      session:
+        timeout:
+          ms: 45000
+    # Listener-specific properties (for @KafkaListener)
+#    listener:
+#      ack-mode: BATCH # Listener AckMode (e.g., BATCH, RECORD, MANUAL_IMMEDIATE).
+#      concurrency: 2 # Number of threads to run in the listener containers.
+
 
 logging:
   level:
@@ -30,4 +76,4 @@ logging:
 
 weather:
   api:
-    key: "0098e097dd64e3d72c5f4632c70f6dd3"
+    key: "xxxx"
