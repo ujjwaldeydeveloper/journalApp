@@ -13,7 +13,7 @@ public class SentimentConsumerService {
     @Autowired
     private EmailService emailService;
 
-    @KafkaListener(topics = "weekly-sentiments", groupId = "weekly-sentiment-group")
+    @KafkaListener(topics = "weekly_sentiments", groupId = "weekly-sentiment-group")
     public void consume(SentimentData sentimentData) {
         try {
             log.info("Consumed sentiment from Kafka for email: {}", sentimentData != null ? sentimentData.getEmail() : "null");
