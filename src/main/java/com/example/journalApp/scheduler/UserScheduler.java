@@ -69,7 +69,8 @@ public class UserScheduler {
                 try {
                     kafkaTemplate.send("weekly-sentiments", sentimentData.getEmail(), sentimentData).get();
                 } catch (Exception e) {
-                    log.error("Error sending sentiment data for user: {}", user.getEmail(), e);
+                    log.error("Error sending sentiment data for user via kafa. So sending a sync email to: {}", user.getEmail(),"Reason", e);
+                    emailService.sendEmail(sentimentData.getEmail(), "Sentiment for Previous week", sentimentData.getSentiment());
                 }
             } else {
                 log.info("No sentiment data found for user: {} in the last 7 days", user.getEmail());
