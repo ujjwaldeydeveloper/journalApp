@@ -4,6 +4,7 @@ import com.example.journalApp.entity.JournalEntry;
 import com.example.journalApp.entity.User;
 import com.example.journalApp.service.JournalEntryService;
 import com.example.journalApp.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name = "Journal APIs", description = "Journal Description")
 public class JournalEntryControllerV2 {
 
     @Autowired
@@ -59,18 +61,19 @@ public class JournalEntryControllerV2 {
     }
 
     @GetMapping("id/{myId}")
-    public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable Object myId) {
+    public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable String myId) {
+        ObjectId objectId = new ObjectId(myId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         Optional<User> user = userService.findByName(userName);
         if (user.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<JournalEntry> collect = user.get().getJournalEntries().stream().filter(x -> x.getId().toString().equals(myId.toString())).toList();
+        List<JournalEntry> collect = user.get().getJournalEntries().stream().filter(x -> x.getId().toString().equals(objectId.toString())).toList();
         if (!collect.isEmpty()) {
-            Optional<JournalEntry> journalEntry = journalEntryService.getByID(myId);
+            Optional<JournalEntry> journalEntry = journalEntryService.getByID(objectId);
             if (journalEntry.isPresent()) {
-                return new ResponseEntity<JournalEntry>(journalEntry.get(), HttpStatus.OK);
+                return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

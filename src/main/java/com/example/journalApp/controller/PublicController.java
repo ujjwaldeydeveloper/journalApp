@@ -1,9 +1,11 @@
 package com.example.journalApp.controller;
 
+import com.example.journalApp.dto.UserDTO;
 import com.example.journalApp.entity.User;
 import com.example.journalApp.service.UserDetailsServiceImpl;
 import com.example.journalApp.service.UserService;
 import com.example.journalApp.utills.JwtUtill;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/public")
 @Slf4j
+@Tag(name = "Public APIs")
 public class PublicController {
     @Autowired
     private UserService userService;
@@ -42,12 +45,21 @@ public class PublicController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody User user) {
+    public ResponseEntity<?> signup(@RequestBody UserDTO user) {
         try {
-            userService.saveNewUser(user);
+            User newUser = new User();
+            newUser.setEmail(user.getEmail());
+            newUser.setName(user.getName());
+            newUser.setPassword(user.getPassword());
+            newUser.setSentimentAnalysis(user.isSentimentAnalysis());
+
+            boolean saved = userService.saveNewUser(newUser);
+            if (!saved) {
+                return new ResponseEntity<>("User already exists (duplicate username or email)", HttpStatus.CONFLICT);
+            }
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error creating new user" + e.toString(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error creating new user: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
